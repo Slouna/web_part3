@@ -31,6 +31,7 @@ let persons = [
   ]
  
 
+app.use(express.json())
 
 app.get('/api/persons', (request, response) => {
     response.json(persons)
@@ -41,6 +42,7 @@ app.get('/info', (request, response) => {
 })
 
 app.get('/api/persons/:id', (request, response) => {
+    
     const id = Number(request.params.id)
     const person = persons.find(person => person.id === id)
     if(person) {
@@ -56,6 +58,18 @@ app.delete('/api/persons/:id', (request, response) => {
 
     response.status(204).end()
 })
+
+app.post('/api/persons', (request, response) => {
+    console.log(request.headers)
+    const person = request.body
+    person.id = Math.floor(Math.random() * (1000- 5) + 5)
+    console.log(person)
+
+    persons = persons.concat(person)
+    response.json(person)
+})
+
+
 
 const PORT = 3001
 app.listen(PORT)
