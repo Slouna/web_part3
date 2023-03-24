@@ -2,6 +2,7 @@ const { request, response } = require('express')
 const express = require('express')
 const app = express()
 const morgan = require('morgan')
+const cors = require('cors')
 
 let persons = [
     {
@@ -23,17 +24,13 @@ let persons = [
       name: "Mary Poppendieck",
       number: "39-23-6423122",
       id: 4
-    },
-    {
-        name: "Marrrrrry Poppendieck",
-        number: "39-23-642312332",
-        id: 6
-      }
+    }
   ]
  
 
 app.use(express.json())
 app.use(morgan('tiny'))
+app.use(cors())
 
 app.get('/api/persons', (request, response) => {
     response.json(persons)
@@ -57,12 +54,11 @@ app.get('/api/persons/:id', (request, response) => {
 app.delete('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
     persons = persons.filter(person => person.id !== id)
-
+    console.log(`poistettu: ${id}`)
     response.status(204).end()
 })
 
 app.post('/api/persons', (request, response) => {
-    console.log(request.headers)
     const body = request.body
 
     /* tarkastetaan onko nimi tyhjä tai löytyykö nimeä jo valmiiksi
