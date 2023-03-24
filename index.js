@@ -61,13 +61,46 @@ app.delete('/api/persons/:id', (request, response) => {
 
 app.post('/api/persons', (request, response) => {
     console.log(request.headers)
-    const person = request.body
-    person.id = Math.floor(Math.random() * (1000- 5) + 5)
-    console.log(person)
+    const body = request.body
 
+    /* tarkastetaan onko nimi tyhjä tai löytyykö nimeä jo valmiiksi
+        sen jälkeen tarkastetaan numerolle samat 
+     */
+    if (!body.name) {
+        return response.status(400).json({ 
+          error: 'name missing' 
+        })
+    } else if (persons.some(p => p.name === body.name)){
+        return response.status(400).json({ 
+            error: 'name already in the phonebook' 
+          })
+          
+    } else if(!body.number) {
+        return response.status(400).json({ 
+            error: 'number missing' 
+          })
+    } else if (persons.some(p => p.number === body.number)){
+        return response.status(400).json({ 
+            error: 'number already in the phonebook' 
+          })
+    
+    }
+
+    const person = {
+        name: body.name,
+        number: body.number,
+        id: generateId(),
+    }
     persons = persons.concat(person)
     response.json(person)
 })
+
+
+
+const generateId = () => {
+    return Math.floor(Math.random() * (1000- 5) + 5)
+}
+
 
 
 
