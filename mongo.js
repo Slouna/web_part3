@@ -28,7 +28,6 @@ if(process.argv[3]===null || process.argv[3] === undefined){
         mongoose.connection.close()
     })
 } else{
-    console.log(`${process.argv[3]}`)
     const person = new Person({
     name: process.argv[3],
     number: process.argv[4],
