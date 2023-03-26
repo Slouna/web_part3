@@ -51,30 +51,15 @@ app.get('/api/persons/:id', (request, response) => {
   Person.findById(request.params.id).then(person => {
     response.json(person)
   })
-
-    /*
-    const id = Number(request.params.id)
-    const person = persons.find(person => person.id === id)
-    if(person) {
-        response.json(person)
-    } else {
-        response.status(404).end()
-    }
-    */
 })
 
-app.delete('/api/persons/:id', (request, response) => {
-    Person.findById(request.params.id).then(person => {
-      Person.deleteOne(person).then(console.log(person))
+app.delete('/api/persons/:id', (request, response, next) => {
+    Person.findByIdAndRemove(request.params.id)
+    .then(result => {
+      console.log(`${result.name} deleted`)
+      response.status(204).end()
     })
-    
-    /*
-    console.log(persons.find(person => person.id === id))
-    persons = persons.filter(person => person.id !== id)
-    console.log(persons.filter(person => person.id !== id))
-    */
-   console.log(`poistettu`)
-    response.status(204).end()
+    .catch(error => next(error))
 })
 
 app.post('/api/persons', (request, response) => {
