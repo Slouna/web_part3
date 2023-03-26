@@ -47,10 +47,15 @@ app.get('/info', (request, response) => {
     response.send(`<p>Phonebook has info for ${persons.length} people</p> <p>${new Date()}</p>`)
 })
 
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response, next) => {
   Person.findById(request.params.id).then(person => {
-    response.json(person)
+    if(person) {
+      response.json(person)
+    } else {
+      response.status(404).end()
+    }
   })
+  .catch(eroor => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
@@ -110,6 +115,18 @@ app.post('/api/persons', (request, response) => {
 const generateId = () => {
     return Math.floor(Math.random() * (1000- 5) + 5)
 }
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  }
+
+  next(error)
+}
+
+app.use(errorHandler)
 
 
 
